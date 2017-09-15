@@ -48,6 +48,13 @@ class GenerateCommand extends Command
                 getcwd().'/.couscous/generated'
             )
             ->addOption(
+                'config-file',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Alternate config file instead of couscous.yml.',
+                getcwd().'couscous.yml'
+            )
+            ->addOption(
                 'config',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
@@ -59,10 +66,13 @@ class GenerateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $cliConfig = $input->getOption('config');
+        $configFile = $input->getOption('config-file');
 
         $project = new Project($input->getArgument('source'), $input->getOption('target'));
 
         $project->metadata['cliConfig'] = $cliConfig;
+        if ($configFile)
+            $project->metadata['configFile'] = $configFile;
 
         $this->generator->generate($project, $output);
     }

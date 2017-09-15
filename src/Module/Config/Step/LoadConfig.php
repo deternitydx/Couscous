@@ -43,6 +43,13 @@ class LoadConfig implements Step
     public function __invoke(Project $project)
     {
         $filename = $project->sourceDirectory.'/'.self::FILENAME;
+        if (isset($project->metadata["configFile"])) {
+            if ($this->filesystem->exists($project->metadata["configFile"])) {
+                $filename = $project->metadata["configFile"];
+            } else {
+                $this->logger->notice('Configuration file found, using default couscous.yml configuration');
+            }
+        }
 
         if (!$this->filesystem->exists($filename)) {
             $this->logger->notice('No couscous.yml configuration file found, using default config');
